@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquidity Coverage Ratio Calculator | BondStats</title>
+  <meta
+    name="description"
+    content="Calculate Basel III Liquidity Coverage Ratio (LCR) using HQLA, cash outflows and cash inflows over a 30-day stress period."
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="tool-shell">
+    <section class="hero-card">
+      <p class="eyebrow">BondStats Tool</p>
+      <h1>Liquidity Coverage Ratio Calculator</h1>
+      <p class="hero-text">
+        Estimate a Basel-style Liquidity Coverage Ratio (LCR) using high-quality liquid assets,
+        30-day cash outflows and cash inflows. The tool applies an inflow cap and highlights whether
+        the calculated ratio is above or below the 100% benchmark.
+      </p>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card summary-card-primary">
+        <span class="summary-label">Liquidity Coverage Ratio</span>
+        <strong id="lcrValue" class="summary-value">125%</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Status</span>
+        <strong id="lcrStatus" class="summary-value status-pass">Above 100%</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Adjusted HQLA</span>
+        <strong id="hqlaValue" class="summary-value">250.0</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Net Cash Outflows</span>
+        <strong id="ncoValue" class="summary-value">200.0</strong>
+      </article>
+    </section>
+
+    <section class="main-grid">
+      <section class="panel-card">
+        <div class="section-head">
+          <h2>High-Quality Liquid Assets (HQLA)</h2>
+          <p>Enter adjusted or eligible HQLA amounts after your internal classification approach.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="level1Assets">Level 1 Assets</label>
+            <input id="level1Assets" type="number" step="0.1" value="180" />
+          </div>
+
+          <div class="field">
+            <label for="level2aAssets">Level 2A Assets</label>
+            <input id="level2aAssets" type="number" step="0.1" value="40" />
+          </div>
+
+          <div class="field">
+            <label for="level2bAssets">Level 2B Assets</label>
+            <input id="level2bAssets" type="number" step="0.1" value="20" />
+          </div>
+
+          <div class="field">
+            <label for="additionalBuffer">Other Internal Buffer (Optional)</label>
+            <input id="additionalBuffer" type="number" step="0.1" value="10" />
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-head">
+          <h2>30-Day Cash Outflows</h2>
+          <p>Enter stressed expected outflows over the next 30 calendar days.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="retailOutflows">Retail Deposit Outflows</label>
+            <input id="retailOutflows" type="number" step="0.1" value="90" />
+          </div>
+
+          <div class="field">
+            <label for="wholesaleOutflows">Wholesale Funding Outflows</label>
+            <input id="wholesaleOutflows" type="number" step="0.1" value="70" />
+          </div>
+
+          <div class="field">
+            <label for="derivativeOutflows">Derivative / Margin Outflows</label>
+            <input id="derivativeOutflows" type="number" step="0.1" value="25" />
+          </div>
+
+          <div class="field">
+            <label for="otherOutflows">Other Outflows</label>
+            <input id="otherOutflows" type="number" step="0.1" value="15" />
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="main-grid">
+      <section class="panel-card">
+        <div class="section-head">
+          <h2>30-Day Cash Inflows</h2>
+          <p>Enter expected stressed inflows. The tool applies the Basel-style inflow cap automatically.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="securedInflows">Secured Lending Inflows</label>
+            <input id="securedInflows" type="number" step="0.1" value="30" />
+          </div>
+
+          <div class="field">
+            <label for="unsecuredInflows">Unsecured Inflows</label>
+            <input id="unsecuredInflows" type="number" step="0.1" value="40" />
+          </div>
+
+          <div class="field">
+            <label for="otherInflows">Other Inflows</label>
+            <input id="otherInflows" type="number" step="0.1" value="20" />
+          </div>
+
+          <div class="field">
+            <label for="currencyLabel">Optional Bank / Entity Label</label>
+            <input id="currencyLabel" type="text" placeholder="e.g. Example Bank" />
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="calculateBtn" class="primary-btn">Calculate LCR</button>
+          <button id="resetBtn" class="secondary-btn">Reset</button>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-head">
+          <h2>Calculation Breakdown</h2>
+          <p>See how the ratio is built step by step.</p>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-row">
+            <span>Total HQLA</span>
+            <strong id="totalHqlaDisplay">250.0</strong>
+          </div>
+          <div class="breakdown-row">
+            <span>Total Cash Outflows</span>
+            <strong id="totalOutflowsDisplay">200.0</strong>
+          </div>
+          <div class="breakdown-row">
+            <span>Total Cash Inflows</span>
+            <strong id="totalInflowsDisplay">90.0</strong>
+          </div>
+          <div class="breakdown-row">
+            <span>Inflow Cap (75% of Outflows)</span>
+            <strong id="inflowCapDisplay">150.0</strong>
+          </div>
+          <div class="breakdown-row">
+            <span>Recognised Inflows</span>
+            <strong id="recognizedInflowsDisplay">90.0</strong>
+          </div>
+          <div class="breakdown-row breakdown-total">
+            <span>Net Cash Outflows</span>
+            <strong id="netOutflowsDisplay">110.0</strong>
+          </div>
+        </div>
+
+        <div class="interpretation-card">
+          <h3>Interpretation</h3>
+          <p id="interpretationText">
+            The calculated liquidity coverage ratio is above 100%, indicating that the entered stock of liquid assets exceeds estimated net stressed 30-day outflows.
+          </p>
+        </div>
+      </section>
+    </section>
+
+    <section class="scenario-card">
+      <div class="section-head">
+        <h2>Sensitivity Scenarios</h2>
+        <p>How the ratio changes if outflows rise or HQLA declines.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Adjusted HQLA</th>
+              <th>Net Cash Outflows</th>
+              <th>LCR</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="scenarioTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="insight-grid">
+      <article class="info-card">
+        <h3>What the LCR Measures</h3>
+        <p>
+          The Liquidity Coverage Ratio measures whether a bank holds enough high-quality liquid assets
+          to withstand a 30-day stress scenario. It is one of the most important short-term liquidity metrics in banking regulation.
+        </p>
+      </article>
+
+      <article class="info-card">
+        <h3>Why It Matters for Bond Markets</h3>
+        <p>
+          Government bonds and other highly liquid assets are central to bank liquidity management.
+          The LCR therefore connects directly to sovereign debt markets, collateral quality and stress-period funding resilience.
+        </p>
+      </article>
+    </section>
+
+    <section class="methodology-card">
+      <div class="section-head">
+        <h2>Methodology</h2>
+      </div>
+      <p>
+        This calculator uses the standard Basel-style structure:
+        <strong>LCR = HQLA / Net Cash Outflows over 30 days</strong>.
+      </p>
+      <p>
+        Net cash outflows are calculated as total stressed outflows minus recognised inflows,
+        subject to an inflow cap.
+      </p>
+      <p class="disclaimer">
+        This BondStats tool is provided for informational and educational purposes only.
+        It is a simplified Basel-style calculator and not a substitute for regulatory reporting, legal advice or supervisory interpretation.
+      </p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
